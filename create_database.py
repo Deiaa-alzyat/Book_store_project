@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # MySQL database connection URI
-DATABASE_URI = 'mysql://username:password@localhost/library'
+DATABASE_URI = 'mysql://deiaa_samir:deiaasamirpwd@localhost/library'
 
 # SQLAlchemy engine
 engine = create_engine(DATABASE_URI)
