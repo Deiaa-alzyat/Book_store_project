@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Review App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Book Store App</h1>
+    <div id="login-form">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+    <div id="register-form">
+        <h2>Register</h2>
+        <input type="email" id="reg-email" placeholder="Email">
+        <input type="password" id="reg-password" placeholder="Password">
+        <button onclick="register()">Register</button>
+    </div>
+    <div id="search-form">
+        <h2>Search Books</h2>
+        <input type="text" id="search-query" placeholder="Search query">
+        <button onclick="searchBooks()">Search</button>
+    </div>
+    <div id="book-results">
+        <!-- Book search results will be displayed here -->
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
