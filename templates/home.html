@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Include any necessary CSS -->
+</head>
+<body>
+
+<div class="navbar">
+    <button class="btn" onclick="toggleMenu()">☰</button>
+    <div class="menu" id="menu">
+        <a href="/login">Sign In</a>
+        <a href="/register">Sign Up</a>
+        <a href="/logout">Sign Out</a>
+        <a href="/">Home</a>
+    </div>
+</div>
+
+<!-- Your page content here -->
+
+<!-- Include any necessary JavaScript -->
+<script>
+function toggleMenu() {
+    var menu = document.getElementById("menu");
+    menu.classList.toggle("show");
+}
+</script>
+</body>
+</html>
