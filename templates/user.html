@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+
+</head>
+<body>
+    <h1>User Dashboard</h1>
+    <h2>Book Search</h2>
+    <form id="search-book-form" onsubmit="searchBooks(event)">
+        <label for="query">Search for books:</label><br>
+        <input type="text" id="search-query" placeholder="Enter book name...">
+        <button type="submit" onclick="searchBooks()">Search</button>
+    </form>
+    <div id="book-results">
+        <!-- Display search results here -->
+    </div>
+    <p>Return to <a href="/searchBooks">"searchBooks</a></p>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+</body>
+</html>

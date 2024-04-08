@@ -12,33 +12,59 @@ async function login() {
 
     if (response.ok) {
         const data = await response.json();
-        console.log(data); // Handle successful login (e.g., store token, redirect)
+        console.log(data); // Handle successful login
+
+        // Redirect to the received URL after successful login
+        window.location.href = data.redirect_url;
     } else {
         const errorMessage = await response.text();
         alert(`Login failed: ${errorMessage}`);
     }
 }
 
-async function register() {
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
+async function register(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-    const response = await fetch('/api/register', {
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    // Simple validation
+    if (!name || !email || !password || !confirmPassword) {
+        alert("All fields are required");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('confirm-password', confirmPassword);
+
+    const response = await fetch('/register', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
+        body: formData
     });
 
     if (response.ok) {
         const data = await response.json();
         console.log(data); // Handle successful registration
+	alert(data.msg);
+	setTimeout(function() {
+            window.location.href = '/api/login';
+        }, 2000);
     } else {
         const errorMessage = await response.text();
         alert(`Registration failed: ${errorMessage}`);
     }
 }
+
 
 async function searchBooks() {
     const query = document.getElementById('search-query').value;

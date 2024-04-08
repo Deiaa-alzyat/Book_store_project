@@ -6,12 +6,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     # Relationships
     books = db.relationship('Book', secondary='user_books', back_populates='users')
     authors = db.relationship('Author', secondary='user_authors', back_populates='users')
-
-    password = db.Column(db.String(255), nullable=False)
 
     def set_password(self, password):
         self.password = generate_password_hash(password).decode('utf-8')

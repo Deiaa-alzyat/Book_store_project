@@ -37,7 +37,7 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return redirect(url_for('auth_bp.login'))
+    return redirect(url_for('bp.login'))
 
 # Logout route
 @app.route('/logout')

@@ -17,33 +17,80 @@ def get_book(book_id):
     return jsonify({'message': 'Book not found'}), 404
 
 # Route for user registration
-@bp.route('/api/register', methods=['POST'])
+@bp.route('/register', methods=['GET', 'POST'])
 def register():
-    email = request.json.get('email', None)
-    password = request.json.get('password', None)
-    # Simple validation
-    if not email or not password:
-        return jsonify({"msg": "Missing email or password"}), 400
-    # Check if user exists
-    if User.query.filter_by(email=email).first():
-        return jsonify({"msg": "User already exists"}), 409
-    user = User(email=email)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
-    return jsonify({"msg": "User registered successfully"}), 201
+    if request.method == 'POST':
+        # Debug: Print received form data
+        print("Received form data:")
+        print(request.form)
+
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm-password')
+
+        # Debug: Print extracted form data
+        print("Extracted form data:")
+        print("Name:", name)
+        print("Email:", email)
+        print("Password:", password)
+        print("Confirm Password:", confirm_password)
+
+        # Simple validation
+        if not name or not email or not password or not confirm_password:
+            return jsonify({"msg": "All fields are required"}), 400
+        if password != confirm_password:
+            return jsonify({"msg": "Passwords do not match"}), 400
+
+        # Check if user exists
+        if User.query.filter_by(email=email).first():
+            return jsonify({"msg": "User already exists"}), 409
+
+        # Create new user
+        user = User(name=name, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"msg": "User registered successfully"}), 201
+
+    # If it's a GET request, render the register template
+    return render_template('register.html')
+
+@bp.route('/admin')
+def admin():
+    return render_template('admin.html')
+
+@bp.route('/user')
+def user():
+    return render_template('user.html')
 
 # Route for user login
-@bp.route('/api/login', methods=['POST'])
+
 def login():
-    email = request.json.get('email', None)
-    password = request.json.get('password', None)
-    user = User.query.filter_by(email=email).first()
-    if user and user.check_password(password):
-        access_token = create_access_token(identity=email)
-        refresh_token = create_refresh_token(identity=email)
-        return jsonify(access_token=access_token, refresh_token=refresh_token), 200
-    return jsonify({"msg": "Bad username or password"}), 401
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            if email == 'eng.deiaa1111@gmail.com':  # Check if admin email
+                access_token = create_access_token(identity=email)
+                refresh_token = create_refresh_token(identity=email)
+                return jsonify({
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "redirect_url": url_for('admin')
+                }), 200
+            else:
+                access_token = create_access_token(identity=email)
+                refresh_token = create_refresh_token(identity=email)
+                return jsonify({
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                    "redirect_url": url_for('user')
+                }), 200
+        return jsonify({"msg": "Bad username or password"}), 401
+    # If it's a GET request, render the login template
+    return render_template('login.html')
 
 # Route to search for books
 @bp.route('/api/books', methods=['GET'])

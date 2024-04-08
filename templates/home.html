@@ -11,10 +11,10 @@
 <div class="navbar">
     <button class="btn" onclick="toggleMenu()">☰</button>
     <div class="menu" id="menu">
-        <a href="/login">Sign In</a>
-        <a href="/register">Sign Up</a>
-        <a href="/logout">Sign Out</a>
         <a href="/">Home</a>
+	<a href="{{ url_for('routes.register') }}">Sign Up</a>
+        <a href="{{ url_for('routes.login') }}">Sign In</a>
+        <a href="{{ url_for('routes.logout') }}">Sign Out</a>
     </div>
 </div>
 
