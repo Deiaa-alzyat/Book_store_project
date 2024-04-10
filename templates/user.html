@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
-
+    <title>User Page</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 </head>
 <body>
+
     <h1>User Dashboard</h1>
     <h2>Book Search</h2>
     <form id="search-book-form" onsubmit="searchBooks(event)">
@@ -20,5 +20,38 @@
     </div>
     <p>Return to <a href="/searchBooks">"searchBooks</a></p>
     <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+
+    <a href="/" class="home-link">Home</a>
+    <a href="{{ url_for('routes.logout') }}" class="signout-link">Sign Out</a>
+    <h1>Welcome, User!</h1>
+    
+    <!-- Form to get reviews -->
+    <h2>Get Reviews</h2>
+    <form id="get-reviews-form" onsubmit="getReviews(event)">
+        <label for="book_id">Book ID:</label><br>
+        <input type="number" id="book_id" name="book_id" required><br><br>
+        <button type="submit">Get Reviews</button>
+    </form>
+    
+    <!-- Form to add review -->
+    <h2>Add Review</h2>
+    <form id="add-review-form" onsubmit="addReview(event)">
+        <label for="book_id">Book ID:</label><br>
+        <input type="number" id="book_id" name="book_id" required><br>
+        <label for="content">Review Content:</label><br>
+        <textarea id="content" name="content" required></textarea><br><br>
+        <button type="submit">Add Review</button>
+    </form>
+    
+    <!-- Form to delete review -->
+    <h2>Delete Review</h2>
+    <form id="delete-review-form" onsubmit="deleteReview(event)">
+        <label for="review_id">Review ID:</label><br>
+        <input type="number" id="review_id" name="review_id" required><br><br>
+        <button type="submit">Delete Review</button>
+    </form>
+    
+    <!-- Include script.js -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>

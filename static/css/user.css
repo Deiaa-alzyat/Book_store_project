@@ -1,9 +1,12 @@
 body {
+	    background-image: url('../img/background2.jpg');
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+	    background-repeat: no-repeat;
             box-sizing: border-box;
+	    background-size: cover;
         }
         
         h1 {
@@ -67,3 +70,33 @@ body {
         a:hover {
             text-decoration: underline;
         }
+
+
+	/* Adjust the position of the "Home" link */
+.home-link {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    left: 20px; /* Adjust as needed */
+    color: white; /* Adjust text color as needed */
+}
+
+/* Adjust the position of the "Sign Out" link */
+.signout-link {
+    position: absolute;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+    color: white; /* Adjust text color as needed */
+}
+
+/* Style for form inputs */
+input[type="text"],
+input[type="number"],
+input[type="float"],
+textarea {
+    width: calc(100% - 22px); /* Adjusted width */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}

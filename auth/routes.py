@@ -144,6 +144,40 @@ def get_reviews(book_id):
     reviews_data = [{"id": review.id, "content": review.content, "user": review.user.email} for review in reviews]
     return jsonify(reviews_data), 200
 
+# Add book route
+@bp.route('/admin/add_book', methods=['GET', 'POST'])
+def add_book():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+        type = request.form.get('type')
+        rate = request.form.get('rate')
+        author_id = request.form.get('author_id')
+
+        # Validate input
+        if not name or not author_id:
+            return jsonify({"error": "Name and Author ID are required"}), 400
+
+        # Create new book instance
+        new_book = Book(name=name, description=description, type=type, rate=rate, author_id=author_id)
+
+        # Add book to database
+        db.session.add(new_book)
+        db.session.commit()
+        print("Book added successfully")
+
+        return jsonify({"message": "Book added successfully", "book_id": new_book.id}), 201
+
+    return jsonify({"error": "Method not allowed"}), 405
+
+@bp.route('/api/review/<int:review_id>', methods=['DELETE'])
+@jwt_required()
+def delete_review(review_id):
+    review = Review.query.get(review_id)
+    if review:
+        db.session.delete(review)
+        db.session
+
 # Logout route
 @bp.route('/logout')
 def logout():
