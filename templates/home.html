@@ -4,17 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
-    <!-- Include any necessary CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<div class="navbar">
-    <button class="btn" onclick="toggleMenu()">☰</button>
-    <div class="menu" id="menu">
-        <a href="/">Home</a>
-	<a href="{{ url_for('routes.register') }}">Sign Up</a>
-        <a href="{{ url_for('routes.login') }}">Sign In</a>
-        <a href="{{ url_for('routes.logout') }}">Sign Out</a>
+<div class="container">
+    <div class="navbar">
+        <button class="btn" onclick="toggleMenu()">☰</button>
+        <div class="menu" id="menu">
+            <a href="/" class="menu-item">Home</a>
+            <a href="{{ url_for('routes.register') }}" class="menu-item">Sign Up</a>
+            <a href="{{ url_for('routes.login') }}" class="menu-item">Sign In</a>
+            <a href="{{ url_for('routes.logout') }}" class="menu-item">Sign Out</a>
+            <a href="#" onclick="toggleAbout()" class="menu-item">About Us</a>
+            <a href="#" onclick="toggleContact()" class="menu-item">Contact Us</a>
+        </div>
     </div>
 </div>
 
@@ -25,6 +29,14 @@
 function toggleMenu() {
     var menu = document.getElementById("menu");
     menu.classList.toggle("show");
+}
+
+function toggleAbout() {
+    alert("Designed by Mohammed Samir and Deiaa Alzyat. We are ALX students and this was a project required during our learning journey.");
+}
+
+function toggleContact() {
+    alert("We are happy to receive your comments and positive observations via our official email: yousef.alzyat11@gmail.com");
 }
 </script>
 </body>

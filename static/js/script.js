@@ -9,7 +9,9 @@ async function login() {
         },
         body: JSON.stringify({ email, password })
     });
-
+    if (response.status === 401) {
+    alert("Invalid email or password");
+}
     if (response.ok) {
         const data = await response.json();
         console.log(data); // Handle successful login

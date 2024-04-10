@@ -1,12 +1,31 @@
 from flask import Blueprint, request, jsonify, redirect, url_for,session,render_template
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Book, Author, Review
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, unset_jwt_cookies
-from flask_bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
 
 # Create a Blueprint for routes
 bp = Blueprint('routes', __name__)
 
 bcrypt = Bcrypt()
+@bp.route('/update_passwords')
+def update_passwords():
+    # Fetch all existing users from the database
+    users = User.query.all()
+
+    # Print all users and their passwords
+    for user in users:
+        print(f"User: {user.name}, Email: {user.email}, Password: {user.password}")
+
+    # Iterate over each user and update their password
+    for user in users:
+        hashed_password = generate_password_hash(user.password).decode('utf-8')
+        user.password = hashed_password
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    return "Passwords updated successfully!"
 
 # Route to get book information
 @bp.route('/api/book/<int:book_id>', methods=['GET'])
@@ -47,8 +66,8 @@ def register():
             return jsonify({"msg": "User already exists"}), 409
 
         # Create new user
-        user = User(name=name, email=email)
-        user.set_password(password)
+        hashed_password = generate_password_hash(password).decode('utf-8')
+        user = User(name=name, email=email, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         return jsonify({"msg": "User registered successfully"}), 201
@@ -65,31 +84,34 @@ def user():
     return render_template('user.html')
 
 # Route for user login
-
+@bp.route('/api/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+        # Extract email and password from JSON request data
+        data = request.get_json()
+        email = data.get('email')
+        password = data.get('password')
+
+        if not email or not password:
+            return jsonify({"msg": "Email and password are required"}), 400
+
         user = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
-            if email == 'eng.deiaa1111@gmail.com':  # Check if admin email
-                access_token = create_access_token(identity=email)
-                refresh_token = create_refresh_token(identity=email)
-                return jsonify({
-                    "access_token": access_token,
-                    "refresh_token": refresh_token,
-                    "redirect_url": url_for('admin')
-                }), 200
-            else:
-                access_token = create_access_token(identity=email)
-                refresh_token = create_refresh_token(identity=email)
-                return jsonify({
-                    "access_token": access_token,
-                    "refresh_token": refresh_token,
-                    "redirect_url": url_for('user')
-                }), 200
-        return jsonify({"msg": "Bad username or password"}), 401
-    # If it's a GET request, render the login template
+        if user and check_password_hash(user.password, password):
+            # Generate access and refresh tokens
+            access_token = create_access_token(identity=email)
+            refresh_token = create_refresh_token(identity=email)
+            
+            # Determine redirect URL based on user role
+            redirect_url = url_for('routes.admin' if email == 'eng.deiaa1111@gmail.com' else 'routes.user')
+
+            return jsonify({
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "redirect_url": redirect_url
+            }), 200
+        else:
+            return jsonify({"msg": "Invalid email or password"}), 401
+
     return render_template('login.html')
 
 # Route to search for books
