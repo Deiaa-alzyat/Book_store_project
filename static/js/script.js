@@ -1,3 +1,22 @@
+async function updateUserWelcomeMessage() {
+    const response = await fetch('/api/user', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        const userData = await response.json();
+        const userName = userData.name; // Assuming the user object has a 'name' property
+        const welcomeMessageElement = document.getElementById('welcome-message');
+        welcomeMessageElement.textContent = `Welcome, ${userName}!`;
+    } else {
+        const errorMessage = await response.text();
+        console.error(`Failed to fetch user data: ${errorMessage}`);
+    }
+}
+
 async function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
@@ -15,7 +34,7 @@ async function login() {
     if (response.ok) {
         const data = await response.json();
         console.log(data); // Handle successful login
-
+        updateUserWelcomeMessage();
         // Redirect to the received URL after successful login
         window.location.href = data.redirect_url;
     } else {
@@ -247,3 +266,10 @@ document.getElementById('get-reviews').addEventListener('click', getReviews);
 document.getElementById('add-review').addEventListener('click', addReview);
 document.getElementById('delete-review').addEventListener('click', deleteReview);
 
+let token;
+
+// Update event listeners
+document.getElementById('search-book-form').addEventListener('submit', searchBooks);
+document.getElementById('get-reviews-form').addEventListener('submit', getReviews);
+document.getElementById('add-review-form').addEventListener('submit', addReview);
+document.getElementById('delete-review-form').addEventListener('submit', deleteReview);

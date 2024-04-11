@@ -1,102 +1,101 @@
 body {
-	    background-image: url('../img/background2.jpg');
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-	    background-repeat: no-repeat;
-            box-sizing: border-box;
-	    background-size: cover;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-        
-        form {
-            max-width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        
-        label {
-            font-weight: bold;
-        }
-        
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        
-        button[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        
-        p {
-            text-align: center;
-            margin-top: 10px;
-        }
-        
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        
-        a:hover {
-            text-decoration: underline;
-        }
-
-
-	/* Adjust the position of the "Home" link */
-.home-link {
-    position: absolute;
-    top: 20px; /* Adjust as needed */
-    left: 20px; /* Adjust as needed */
-    color: white; /* Adjust text color as needed */
+    background-image: url('../img/background2.jpg');
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Ensures the background covers the whole page */
+    background-size: cover; /* Cover the entire page with the background */
+    position: relative; /* Needed for absolute positioning of child elements */
 }
 
-/* Adjust the position of the "Sign Out" link */
-.signout-link {
-    position: absolute;
-    top: 20px; /* Adjust as needed */
-    right: 20px; /* Adjust as needed */
-    color: white; /* Adjust text color as needed */
+h1 {
+    text-align: center;
+    color: #999;
 }
 
-/* Style for form inputs */
+h2 {
+    text-align: center;
+    color: #555; /* Changed to a darker shade of gray for better readability */
+}
+
+/* General form styling */
+form {
+    width: 300px; /* Fixed width for all forms */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: absolute; /* Position forms absolutely within the body */
+}
+
+label {
+    font-weight: bold;
+    display: block; /* Ensure the label is on a new line */
+    margin-top: 10px; /* Space above labels */
+}
+
 input[type="text"],
 input[type="number"],
-input[type="float"],
 textarea {
-    width: calc(100% - 22px); /* Adjusted width */
+    width: calc(100% - 22px); /* Adjust width to fit the form */
     padding: 10px;
-    margin-bottom: 10px;
+    margin-top: 5px; /* Space below labels */
     border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
+
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Link positioning */
+.home-link, .signout-link {
+    position: absolute;
+    top: 20px;
+    color: white;
+}
+
+.home-link { left: 20px; }
+.signout-link { right: 20px; }
+
+/* Form positioning */
+#search-book-form, #get-reviews-form {
+    top: 100px; /* Adjusted to align with the top of the forms */
+}
+
+#add-review-form, #delete-review-form {
+    top: 380px; /* Adjusted to align with the top of the forms */
+}
+
+#search-book-form, #add-review-form {
+    left: 20px;
+}
+
+#get-reviews-form, #delete-review-form {
+    right: 20px;
+}
+
