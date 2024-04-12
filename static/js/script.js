@@ -1,19 +1,24 @@
 async function updateUserWelcomeMessage() {
-    const response = await fetch('/api/user', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
+    try {
+        const response = await fetch('/api/user', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Include the JWT token in the request headers if available
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+        });
 
-    if (response.ok) {
-        const userData = await response.json();
-        const userName = userData.name; // Assuming the user object has a 'name' property
-        const welcomeMessageElement = document.getElementById('welcome-message');
-        welcomeMessageElement.textContent = `Welcome, ${userName}!`;
-    } else {
-        const errorMessage = await response.text();
-        console.error(`Failed to fetch user data: ${errorMessage}`);
+        if (response.ok) {
+            const userData = await response.json();
+            const userName = userData.name; // Accessing user's name from the response
+            const welcomeMessageElement = document.getElementById('welcome-message');
+            welcomeMessageElement.textContent = `Welcome, ${userName}!`;
+        } else {
+            throw new Error('Failed to fetch user data');
+        }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
 
@@ -29,12 +34,13 @@ async function login() {
         body: JSON.stringify({ email, password })
     });
     if (response.status === 401) {
-    alert("Invalid email or password");
-}
-    if (response.ok) {
+        alert("Invalid email or password");
+    } else if(response.ok) {
         const data = await response.json();
-        console.log(data); // Handle successful login
-        updateUserWelcomeMessage();
+        console.log(data);
+	const { access_token, redirect_url } = data;
+        localStorage.setItem('access_token', access_token);
+        await updateUserWelcomeMessage(access_token);
         // Redirect to the received URL after successful login
         window.location.href = data.redirect_url;
     } else {
@@ -86,14 +92,18 @@ async function register(event) {
     }
 }
 
+async function searchBooks(event) {
+    event.preventDefault(); // Prevent form submission
 
-async function searchBooks() {
     const query = document.getElementById('search-query').value;
+    console.log('Search Query:', query); // Debugging
 
     const response = await fetch(`/api/books?query=${query}`);
+    console.log('Search Response:', response); // Debugging
 
     if (response.ok) {
         const data = await response.json();
+        console.log('Search Results:', data); // Debugging
 
         const bookResults = document.getElementById('book-results');
         bookResults.innerHTML = ''; // Clear previous results
@@ -108,6 +118,7 @@ async function searchBooks() {
         alert(`Search failed: ${errorMessage}`);
     }
 }
+
 
 // Function to display book detail
 async function displayBookDetails(bookId) {
@@ -151,6 +162,29 @@ async function submitReview(bookId, reviewContent) {
     }
 }
 
+async function addAuthor(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    fetch('/admin/add_author', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to add author');
+        }
+    })
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to add author');
+    });
+}
+
 // JavaScript code for handling form submission to add a new book
 async function addBook(event) {
     event.preventDefault();
@@ -181,11 +215,11 @@ async function addBook(event) {
     });
 }
 
-// Function to get reviews for a book
 async function getReviews(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form submission
 
     const bookId = document.getElementById('book_id').value;
+    console.log('Book ID:', bookId); // Debugging
 
     const response = await fetch(`/api/book/${bookId}/reviews`, {
         method: 'GET',
@@ -193,12 +227,13 @@ async function getReviews(event) {
             'Content-Type': 'application/json'
         }
     });
+    console.log('Get Reviews Response:', response); // Debugging
 
     if (response.ok) {
         const reviews = await response.json();
-        // Handle reviews (e.g., update UI)
-        console.log(reviews);
-        // Display reviews in a new form
+        console.log('Reviews:', reviews); // Debugging
+
+        // Display reviews in UI
         const reviewList = document.getElementById('review-list');
         reviewList.innerHTML = ''; // Clear previous reviews
         reviews.forEach(review => {
@@ -214,57 +249,71 @@ async function getReviews(event) {
 
 // Function to add a review for a book
 async function addReview(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form submission
 
     const bookId = document.getElementById('book_id').value;
     const content = document.getElementById('content').value;
+    console.log('Add Review - Book ID:', bookId); // Debugging
+    console.log('Add Review - Content:', content); // Debugging
 
-    const response = await fetch('/api/reviews', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ book_id: bookId, content: content })
-    });
+    try {
+        const response = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ book_id: bookId, content: content })
+        });
+        console.log('Add Review Response:', response); // Debugging
 
-    if (response.ok) {
-        alert('Review added successfully');
-        // Optionally, update UI to reflect the new review
-    } else {
-        const errorMessage = await response.text();
-        alert(`Failed to add review: ${errorMessage}`);
+        if (response.ok) {
+            alert('Review added successfully');
+            // Optionally, update UI to reflect the new review
+        } else {
+            throw new Error('Failed to add review');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert(`Failed to add review: ${error.message}`);
     }
 }
 
-// Function to delete a review
 async function deleteReview(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent form submission
 
     const reviewId = document.getElementById('review_id').value;
+    console.log('Delete Review - Review ID:', reviewId); // Debugging
 
-    const response = await fetch(`/api/review/${reviewId}`, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+    try {
+        const response = await fetch(`/api/review/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log('Delete Review Response:', response); // Debugging
+
+        if (response.ok) {
+            alert('Review deleted successfully');
+            // Optionally, update UI to reflect the deleted review
+        } else {
+            throw new Error('Failed to delete review');
         }
-    });
-
-    if (response.ok) {
-        alert('Review deleted successfully');
-        // Optionally, update UI to reflect the deleted review
-    } else {
-        const errorMessage = await response.text();
-        alert(`Failed to delete review: ${errorMessage}`);
+    } catch (error) {
+        console.error('Error:', error);
+        alert(`Failed to delete review: ${error.message}`);
     }
 }
 
-// Set event listeners for various actions
-document.getElementById('search-books').addEventListener('click', searchBooks);
-document.getElementById('get-reviews').addEventListener('click', getReviews);
-document.getElementById('add-review').addEventListener('click', addReview);
-document.getElementById('delete-review').addEventListener('click', deleteReview);
+
+// Set event listeners for various action
+//console.log(document.getElementById('search-books'));
+//document.getElementById('search-books').addEventListener('click', searchBooks);
+//document.getElementById('get-reviews').addEventListener('click', getReviews);
+//document.getElementById('add-review').addEventListener('click', addReview);
+//document.getElementById('delete-review').addEventListener('click', deleteReview);
 
 let token;
 
@@ -273,3 +322,5 @@ document.getElementById('search-book-form').addEventListener('submit', searchBoo
 document.getElementById('get-reviews-form').addEventListener('submit', getReviews);
 document.getElementById('add-review-form').addEventListener('submit', addReview);
 document.getElementById('delete-review-form').addEventListener('submit', deleteReview);
+
+updateUserWelcomeMessage();

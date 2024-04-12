@@ -27,6 +27,28 @@ def update_passwords():
 
     return "Passwords updated successfully!"
 
+@bp.route('/api/user', methods=['GET'])
+@jwt_required()  # Ensure that the user is authenticated
+def get_user():
+    # Get the identity (email) of the current user from the JWT token
+    user_email = get_jwt_identity()
+
+    # Query the database to retrieve the user with the specified email address
+    user = User.query.filter_by(email=user_email).first()
+
+    if user:
+        # If user is found, construct a dictionary containing user data
+        user_data = {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            # Add other user attributes as needed
+        }
+        return jsonify(user_data), 200
+    else:
+        # If user is not found, return an appropriate response
+        return jsonify({'message': 'User not found'}), 404
+
 # Route to get book information
 @bp.route('/api/book/<int:book_id>', methods=['GET'])
 def get_book(book_id):
@@ -118,9 +140,19 @@ def login():
 @bp.route('/api/books', methods=['GET'])
 def search_books():
     query = request.args.get('query', '')
-    books = Book.query.filter((Book.name.ilike(f'%{query}%')) | (Book.author.has(name.ilike(f'%{query}%')))).all()
-    books_data = [{"id": book.id, "name": book.name, "author": book.author.name} for book in books]
+    books = Book.query.join(Author).filter(
+        (Book.name.ilike(f'%{query}%')) |
+        (Author.name.ilike(f'%{query}%'))
+    ).all()
+
+    books_data = [{
+        "id": book.id,
+        "name": book.name,
+        "author": book.author.name
+    } for book in books]
+
     return jsonify(books_data), 200
+
 
 # Route to add a review for a book
 @bp.route('/api/reviews', methods=['POST'])
@@ -143,6 +175,20 @@ def get_reviews(book_id):
     reviews = Review.query.filter_by(book_id=book_id).all()
     reviews_data = [{"id": review.id, "content": review.content, "user": review.user.email} for review in reviews]
     return jsonify(reviews_data), 200
+
+@bp.route('/admin/add_author', methods=['POST'])
+def add_author():
+    name = request.form.get('name')
+    description = request.form.get('description')
+    rate = request.form.get('rate')
+
+    if not name:
+        return jsonify({"error": "Name is required"}), 400
+
+    new_author = Author(name=name, description=description, rate=rate)
+    db.session.add(new_author)
+    db.session.commit()
+    return jsonify({"message": "Author added successfully", "author_id": new_author.id}), 201
 
 # Add book route
 @bp.route('/admin/add_book', methods=['GET', 'POST'])

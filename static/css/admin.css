@@ -24,6 +24,12 @@ form {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.forms-container {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}
+
 label {
     font-weight: bold;
 }
