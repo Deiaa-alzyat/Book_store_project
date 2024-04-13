@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask_login import LoginManager, login_user, logout_user
 
 # Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'Samir_Deiaa'
