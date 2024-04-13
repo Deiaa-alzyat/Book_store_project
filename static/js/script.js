@@ -107,12 +107,20 @@ async function searchBooks(event) {
 
         const bookResults = document.getElementById('book-results');
         bookResults.innerHTML = ''; // Clear previous results
-
-        data.forEach(book => {
-            const div = document.createElement('div');
-            div.innerHTML = `<h3>${book.name}</h3><p>${book.author}</p>`;
-            bookResults.appendChild(div);
-        });
+	if (data.length === 0) {
+            bookResults.textContent = 'No Book or Author found match your search';
+        } else {
+            data.forEach(book => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+			<h3>${book.name}</h3>
+			<p>Description: ${book.description}</p>
+                        <p>Type: ${book.type}</p>
+                        <p>Rate: ${book.rate}</p>
+			<p>Author: ${book.author}</p>`;
+                bookResults.appendChild(div);
+            });
+	}
     } else {
         const errorMessage = await response.text();
         alert(`Search failed: ${errorMessage}`);
@@ -139,6 +147,57 @@ async function displayBookDetails(bookId) {
         alert(`Failed to fetch book details: ${errorMessage}`);
     }
 }
+
+async function addReview(event) {
+    event.preventDefault();
+
+    const bookIdInput = document.getElementById('book_id');
+    const contentInput = document.getElementById('content');
+    const statusDiv = document.getElementById('add-review-status');
+    const submitButton = event.target.querySelector('button[type="submit"]');
+
+    submitButton.disabled = true;  // Disable the submit button to prevent multiple submissions
+
+    const bookId = bookIdInput.value;
+    const content = contentInput.value;
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+        statusDiv.innerHTML = 'Authentication token missing. Please log in again.';
+        submitButton.disabled = false;
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ book_id: bookId, content: content })
+        });
+
+        console.log('Add Review Response:', response); // Debugging
+
+        const responseData = await response.json();
+        console.log('Response Data:', responseData); // Debugging
+
+        if (response.ok) {
+            statusDiv.innerHTML = 'Review added successfully';
+            bookIdInput.value = '';
+            contentInput.value = '';
+        } else {
+            statusDiv.innerHTML = responseData.message || 'Failed to add review. Please try again.';
+            submitButton.disabled = false;  // Re-enable the submit button on failure
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        statusDiv.innerHTML = `Failed to add review: ${error.message}`;
+        submitButton.disabled = false;
+    }
+}
+
 
 // Function to submit a review for a book
 async function submitReview(bookId, reviewContent) {
@@ -218,66 +277,49 @@ async function addBook(event) {
 async function getReviews(event) {
     event.preventDefault(); // Prevent form submission
 
-    const bookId = document.getElementById('book_id').value;
+    const bookId = document.getElementById('bookid').value;
     console.log('Book ID:', bookId); // Debugging
 
-    const response = await fetch(`/api/book/${bookId}/reviews`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    console.log('Get Reviews Response:', response); // Debugging
-
-    if (response.ok) {
-        const reviews = await response.json();
-        console.log('Reviews:', reviews); // Debugging
-
-        // Display reviews in UI
-        const reviewList = document.getElementById('review-list');
-        reviewList.innerHTML = ''; // Clear previous reviews
-        reviews.forEach(review => {
-            const div = document.createElement('div');
-            div.innerHTML = `<p>Review ID: ${review.id}</p><p>Content: ${review.content}</p><p>User: ${review.user}</p>`;
-            reviewList.appendChild(div);
-        });
-    } else {
-        const errorMessage = await response.text();
-        alert(`Failed to fetch reviews: ${errorMessage}`);
-    }
-}
-
-// Function to add a review for a book
-async function addReview(event) {
-    event.preventDefault(); // Prevent form submission
-
-    const bookId = document.getElementById('book_id').value;
-    const content = document.getElementById('content').value;
-    console.log('Add Review - Book ID:', bookId); // Debugging
-    console.log('Add Review - Content:', content); // Debugging
-
     try {
-        const response = await fetch('/api/reviews', {
-            method: 'POST',
+        const response = await fetch(`/api/book/${bookId}/reviews`, {
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ book_id: bookId, content: content })
+                'Content-Type': 'application/json'
+            }
         });
-        console.log('Add Review Response:', response); // Debugging
+
+        console.log('Get Reviews Response:', response); // Debugging
 
         if (response.ok) {
-            alert('Review added successfully');
-            // Optionally, update UI to reflect the new review
+            const reviews = await response.json();
+            console.log('Reviews:', reviews); // Debugging
+
+            const reviewList = document.getElementById('get-reviews-results');
+            reviewList.innerHTML = ''; // Clear previous reviews
+
+            if (reviews.length === 0) {
+                reviewList.textContent = 'No reviews found for this book.';
+            } else {
+                const ul = document.createElement('ul');
+                reviews.forEach(review => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <p>Review ID: ${review.id}</p>
+                        <p>Content: ${review.content}</p>
+                        <p>User: ${review.user}</p>`; // Assuming 'user' is the user's email
+                    ul.appendChild(li);
+                });
+                reviewList.appendChild(ul);
+            }
         } else {
-            throw new Error('Failed to add review');
+            throw new Error('Failed to fetch reviews');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert(`Failed to add review: ${error.message}`);
+        alert(`Failed to fetch reviews: ${error.message}`);
     }
 }
+
 
 async function deleteReview(event) {
     event.preventDefault(); // Prevent form submission
@@ -318,9 +360,9 @@ async function deleteReview(event) {
 let token;
 
 // Update event listeners
-document.getElementById('search-book-form').addEventListener('submit', searchBooks);
-document.getElementById('get-reviews-form').addEventListener('submit', getReviews);
-document.getElementById('add-review-form').addEventListener('submit', addReview);
-document.getElementById('delete-review-form').addEventListener('submit', deleteReview);
+//document.getElementById('search-book-form').addEventListener('submit', searchBooks);
+//document.getElementById('get-reviews-form').addEventListener('submit', getReviews);
+//document.getElementById('add-review-form').addEventListener('submit', addReview);
+//document.getElementById('delete-review-form').addEventListener('submit', deleteReview);
 
 updateUserWelcomeMessage();

@@ -12,11 +12,11 @@
     <form id="search-book-form" onsubmit="searchBooks(event)">
 	<h2>Book Search</h2>
         <label for="query">Search for books:</label><br>
-        <input type="text" id="search-query" placeholder="Enter book name...">
+        <input type="text" id="search-query" placeholder="Enter book name or author name...">
         <button type="submit">Search</button>
     </form>
     <div id="book-results">
-        <!-- Display search results here -->
+
     </div>
 
 
@@ -24,33 +24,42 @@
     <a href="{{ url_for('routes.logout') }}" class="signout-link">Sign Out</a>
     <h1 id="welcome-message">Welcome, User!</h1>
     
-    <!-- Form to get reviews -->
+
     <form id="get-reviews-form" onsubmit="getReviews(event)">
 	<h2>Get Reviews</h2>
         <label for="book_id">Book ID:</label><br>
-        <input type="number" id="book_id" name="book_id" required><br><br>
+        <input type="number" id="bookid" name="bookid" required placeholder="Enter book ID...">
         <button type="submit">Get Reviews</button>
     </form>
+    <div id="get-reviews-results">
+
+    </div>
     
-    <!-- Form to add review -->
+
     <form id="add-review-form" onsubmit="addReview(event)">
 	<h2>Add Review</h2>
         <label for="book_id">Book ID:</label><br>
-        <input type="number" id="book_id" name="book_id" required><br>
+        <input type="number" id="book_id" name="book_id" required placeholder="Enter book ID..."><br>
         <label for="content">Review Content:</label><br>
-        <textarea id="content" name="content" required></textarea><br><br>
+        <textarea id="content" name="content" required placeholder="Write your review here..."></textarea>
         <button type="submit">Add Review</button>
     </form>
+    <div id="add-review-status">
+
+    </div>
     
-    <!-- Form to delete review -->
+
     <form id="delete-review-form" onsubmit="deleteReview(event)">
 	<h2>Delete Review</h2>
         <label for="review_id">Review ID:</label><br>
-        <input type="number" id="review_id" name="review_id" required><br><br>
+	<input type="number" id="review_id" name="review_id" required placeholder="Enter your review ID...">
         <button type="submit">Delete Review</button>
     </form>
+    <div id="delete-review-status">
+
+    </div>
     
-    <!-- Include script.js -->
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

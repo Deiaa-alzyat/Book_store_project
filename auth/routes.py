@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify, redirect, url_for,session,render_template
+import logging
+from flask import Blueprint, request, jsonify, redirect, url_for, session,render_template, g
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Book, Author, Review
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, unset_jwt_cookies
 from flask_bcrypt import Bcrypt, generate_password_hash, check_password_hash
-
+logger = logging.getLogger(__name__)
 # Create a Blueprint for routes
 bp = Blueprint('routes', __name__)
 
@@ -148,33 +149,56 @@ def search_books():
     books_data = [{
         "id": book.id,
         "name": book.name,
+        "description": book.description,
+        "type": book.type,
+        "rate": book.rate,
         "author": book.author.name
     } for book in books]
 
     return jsonify(books_data), 200
 
-
-# Route to add a review for a book
+# Route for adding a review
 @bp.route('/api/reviews', methods=['POST'])
 @jwt_required()
 def add_review():
     user_email = get_jwt_identity()
     user = User.query.filter_by(email=user_email).first()
-    book_id = request.json.get('book_id', None)
-    content = request.json.get('content', '')
-    if not book_id or not content:
-        return jsonify({"msg": "Missing book ID or content"}), 400
-    review = Review(content=content, user_id=user.id, book_id=book_id)
-    db.session.add(review)
-    db.session.commit()
-    return jsonify({"msg": "Review added successfully"}), 201
+    if not user:
+        return jsonify({'message': 'User not found'}), 404
 
+    data = request.get_json()
+    book_id = data.get('book_id')
+    content = data.get('content')
+
+
+    review = Review(user_id=user.id, book_id=book_id, content=content)
+    db.session.add(review)
+
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Review added successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Failed to add review'}), 500
+
+# Route to get reviews for a book
 # Route to get reviews for a book
 @bp.route('/api/book/<int:book_id>/reviews', methods=['GET'])
 def get_reviews(book_id):
     reviews = Review.query.filter_by(book_id=book_id).all()
-    reviews_data = [{"id": review.id, "content": review.content, "user": review.user.email} for review in reviews]
+
+    # Check if reviews exist for the given book_id
+    if not reviews:
+        return jsonify({'message': 'No reviews found for this book.'}), 404
+
+    reviews_data = []
+    for review in reviews:
+        user_email = review.user.email if review.user else None
+        review_data = {"id": review.id, "content": review.content, "user": user_email}
+        reviews_data.append(review_data)
+
     return jsonify(reviews_data), 200
+
 
 @bp.route('/admin/add_author', methods=['POST'])
 def add_author():
@@ -222,7 +246,11 @@ def delete_review(review_id):
     review = Review.query.get(review_id)
     if review:
         db.session.delete(review)
-        db.session
+        db.session.commit()  # You need to commit the session after deleting the review
+        return jsonify({'message': 'Review deleted successfully'}), 200
+    else:
+        return jsonify({'message': 'Review not found'}), 404
+
 
 # Logout route
 @bp.route('/logout')

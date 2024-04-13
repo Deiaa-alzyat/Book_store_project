@@ -5,9 +5,9 @@ body {
     margin: 0;
     padding: 0;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* Ensures the background covers the whole page */
-    background-size: cover; /* Cover the entire page with the background */
-    position: relative; /* Needed for absolute positioning of child elements */
+    background-attachment: fixed;
+    background-size: cover;
+    position: relative;
 }
 
 h1 {
@@ -17,35 +17,34 @@ h1 {
 
 h2 {
     text-align: center;
-    color: #555; /* Changed to a darker shade of gray for better readability */
+    color: #555; 
 }
 
-/* General form styling */
-form {
-    width: 300px; /* Fixed width for all forms */
+form, #book-results, #add-review-status, #get-reviews-results, #delete-review-status {
+    width: 300px; 
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: absolute; /* Position forms absolutely within the body */
+    position: absolute;
 }
 
 label {
     font-weight: bold;
-    display: block; /* Ensure the label is on a new line */
-    margin-top: 10px; /* Space above labels */
+    display: block;
+    margin-top: 10px;
 }
 
 input[type="text"],
 input[type="number"],
 textarea {
-    width: calc(100% - 22px); /* Adjust width to fit the form */
+    width: calc(100% - 22px);
     padding: 10px;
-    margin-top: 5px; /* Space below labels */
+    margin-top: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    box-sizing: border-box;
 }
 
 button[type="submit"] {
@@ -72,7 +71,6 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Link positioning */
 .home-link, .signout-link {
     position: absolute;
     top: 20px;
@@ -82,13 +80,13 @@ a:hover {
 .home-link { left: 20px; }
 .signout-link { right: 20px; }
 
-/* Form positioning */
-#search-book-form, #get-reviews-form {
+
+#search-book-form, #book-results, #get-reviews-form, #get-reviews-results {
     top: 100px; /* Adjusted to align with the top of the forms */
 }
 
-#add-review-form, #delete-review-form {
-    top: 380px; /* Adjusted to align with the top of the forms */
+#add-review-form, #delete-review-form, #add-review-status, #delete-review-status{
+    top: 380px;
 }
 
 #search-book-form, #add-review-form {
@@ -99,3 +97,16 @@ a:hover {
     right: 20px;
 }
 
+#book-results,#add-review-status{
+    left: 360px;
+    background-color: transparent;
+    box-shadow: none;
+    color: #ddd;
+}
+
+#get-reviews-results, #delete-review-status{
+        right: 360px;
+        background-color: transparent;
+        box-shadow: none;
+        color: #ddd;
+}
