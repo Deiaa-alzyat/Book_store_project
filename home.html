@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            background-image: url("../img/background2.JPG");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: flex-start;
+            height: 100%;
+        }
+
+        .navbar {
+            position: relative;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: 40px;
+        }
+
+        .menu-item {
+            color: black;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 0 20px;
+            white-space: nowrap;
+        }
+
+        .menu-item:hover {
+            text-decoration: underline;
+        }
+
+        .menu.show {
+            display: flex;
+        }
+
+        .btn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="navbar">
+        <button class="btn" onclick="toggleMenu()">☰</button>
+        <div class="menu" id="menu">
+            <a href="/" class="menu-item">Home</a>
+            <a href="{{ url_for('routes.register') }}" class="menu-item">Sign Up</a>
+            <a href="{{ url_for('routes.login') }}" class="menu-item">Sign In</a>
+            <a href="{{ url_for('routes.logout') }}" class="menu-item">Sign Out</a>
+            <a href="#" onclick="toggleAbout()" class="menu-item">About Us</a>
+            <a href="#" onclick="toggleContact()" class="menu-item">Contact Us</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleMenu() {
+    var menu = document.getElementById("menu");
+    menu.classList.toggle("show");
+}
+
+function toggleAbout() {
+    alert("Designed by Mohammed Samir and Deiaa Alzyat. We are ALX students and this was a project required during our learning journey.");
+}
+
+function toggleContact() {
+    alert("We are happy to receive your comments and positive observations via our official email: yousef.alzyat11@gmail.com");
+}
+</script>
+</body>
+</html>
+

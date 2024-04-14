@@ -4,15 +4,16 @@ body {
     font-family: Arial, sans-serif;
     background-image: url("../img/background2.JPG");
     background-size: cover;
-    background-position: center;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    position: relative;
 }
 
 h1, h2 {
     text-align: center;
-    color: #333;
+    color: #999;
 }
 
 form, #book-status, #author-status {
@@ -21,35 +22,39 @@ form, #book-status, #author-status {
     background-color:  #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-
-#book-status{
-    left: 360px;
-    background-color: transparent;
-    box-shadow: none;
-    color: #ddd;
     top: 100px;
-     width: 300px;
+    width: 300px;
     margin: 0 auto;
     position: absolute;
 }
-
-#author-status{
-    right: 360px;
-    background-color: transparent;
-    box-shadow: none;
-    color: #ddd;
-    top: 100px;
-     width: 300px;
-    position: absolute;
-}
-
 
 .forms-container {
     display: flex;
     justify-content: space-around;
     padding: 20px;
+    top: 20px;
+}
+
+#add-book-form{
+    left: 150px;
+}
+
+#add-author-form{
+    right: 150px;
+}
+
+#book-status{
+    left: 360px;
+}
+
+#author-status{
+    right: 300px;
+}
+
+#book-status, #author-status {
+    background-color: transparent;
+    box-shadow: none;
+    color: #ddd;
 }
 
 label {
