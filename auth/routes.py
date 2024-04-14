@@ -240,17 +240,20 @@ def add_book():
 
     return jsonify({"error": "Method not allowed"}), 405
 
-@bp.route('/api/review/<int:review_id>', methods=['DELETE'])
-@jwt_required()
+@bp.route('/api/reviews/<int:review_id>', methods=['DELETE'])
 def delete_review(review_id):
     review = Review.query.get(review_id)
-    if review:
-        db.session.delete(review)
-        db.session.commit()  # You need to commit the session after deleting the review
-        return jsonify({'message': 'Review deleted successfully'}), 200
-    else:
-        return jsonify({'message': 'Review not found'}), 404
 
+    if not review:
+        return jsonify({'message': 'Review not found.'}), 404
+
+    try:
+        db.session.delete(review)
+        db.session.commit()
+        return jsonify({'message': 'Review deleted successfully.'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Failed to delete review.', 'error': str(e)}), 500
 
 # Logout route
 @bp.route('/logout')

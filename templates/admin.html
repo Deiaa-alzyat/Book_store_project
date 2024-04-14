@@ -24,7 +24,9 @@
             <label for="author_id">Author ID:</label><br>
             <input type="number" id="author_id" name="author_id" required><br><br>
             <button type="submit">Add Book</button>
+	    <div id="book-status"></div>
         </form>
+
         <form id="add-author-form" onsubmit="addAuthor(event)">
             <h2>Add New Author</h2>
             <label for="author_name">Name:</label><br>
@@ -34,6 +36,7 @@
             <label for="author_rate">Rate:</label><br>
             <input type="number" id="author_rate" name="rate" min="0" max="10" step="0.1"><br>
             <button type="submit">Add Author</button>
+	    <div id="author-status"></div>
         </form>
     </div>
 

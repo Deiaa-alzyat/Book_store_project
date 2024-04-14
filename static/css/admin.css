@@ -15,14 +15,36 @@ h1, h2 {
     color: #333;
 }
 
-form {
+form, #book-status, #author-status {
     max-width: 300px;
-    margin: 0 auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color:  #fff;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+
+#book-status{
+    left: 360px;
+    background-color: transparent;
+    box-shadow: none;
+    color: #ddd;
+    top: 100px;
+     width: 300px;
+    margin: 0 auto;
+    position: absolute;
+}
+
+#author-status{
+    right: 360px;
+    background-color: transparent;
+    box-shadow: none;
+    color: #ddd;
+    top: 100px;
+     width: 300px;
+    position: absolute;
+}
+
 
 .forms-container {
     display: flex;
@@ -93,4 +115,3 @@ a:hover {
     right: 10px;
     color: #fff;
 }
-

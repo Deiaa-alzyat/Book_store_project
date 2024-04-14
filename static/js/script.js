@@ -236,11 +236,13 @@ async function addAuthor(event) {
         }
     })
     .then(data => {
-        alert(data.message);
+	document.getElementById('author-status').textContent = data.message;
+        document.getElementById('author-status').style.color = 'green'; // success message in green
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to add author');
+        document.getElementById('author-status').textContent = 'Failed to add author';
+        document.getElementById('author-status').style.color = 'red'; // error message in red
     });
 }
 
@@ -265,12 +267,13 @@ async function addBook(event) {
     })
     .then(data => {
         // Display success message to the user
-        alert(data.message);
-        // Optionally, you can redirect or perform other actions after adding the book
+	document.getElementById('book-status').textContent = data.message;
+        document.getElementById('book-status').style.color = 'green'; // success message in green
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Failed to add book');
+	document.getElementById('book-status').textContent = 'Failed to add book';
+        document.getElementById('book-status').style.color = 'red'; // error message in red
     });
 }
 
@@ -324,28 +327,35 @@ async function getReviews(event) {
 async function deleteReview(event) {
     event.preventDefault(); // Prevent form submission
 
-    const reviewId = document.getElementById('review_id').value;
-    console.log('Delete Review - Review ID:', reviewId); // Debugging
+    const reviewId = document.getElementById('review_id').value; // Fetch the review ID from input
+    console.log('Review ID:', reviewId); // Debugging log
 
     try {
-        const response = await fetch(`/api/review/${reviewId}`, {
+        const response = await fetch(`/api/reviews/${reviewId}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Content-Type': 'application/json'
             }
         });
-        console.log('Delete Review Response:', response); // Debugging
+
+        console.log('Delete Review Response:', response); // Debugging response status
+
+        // Target the status div to update with the result
+        const deleteStatusDiv = document.getElementById('delete-review-status');
 
         if (response.ok) {
-            alert('Review deleted successfully');
-            // Optionally, update UI to reflect the deleted review
+            deleteStatusDiv.textContent = 'Review deleted successfully.';
+            deleteStatusDiv.style.color = 'green'; // Sets text color to green on successful deletion
+        } else if (response.status === 404) {
+            deleteStatusDiv.textContent = 'Review not found.';
+            deleteStatusDiv.style.color = 'red'; // Sets text color to red if not found
         } else {
-            throw new Error('Failed to delete review');
+            throw new Error('Failed to delete review'); // Handle other errors
         }
     } catch (error) {
         console.error('Error:', error);
-        alert(`Failed to delete review: ${error.message}`);
+        document.getElementById('delete-review-status').textContent = `Failed to delete review: ${error.message}`;
+        document.getElementById('delete-review-status').style.color = 'red'; // Error text in red
     }
 }
 
