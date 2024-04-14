@@ -1,3 +1,13 @@
+// Ensure the DOM content is loaded before executing the script
+document.addEventListener('DOMContentLoaded', function() {
+    // Call updateUserWelcomeMessage when the page loads
+    updateUserWelcomeMessage();
+
+    // Add event listener to the registration form submission
+    const registrationForm = document.getElementById('register-form');
+    registrationForm.addEventListener('submit', register);
+});
+
 async function updateUserWelcomeMessage() {
     try {
         const response = await fetch('/api/user', {
@@ -13,7 +23,15 @@ async function updateUserWelcomeMessage() {
             const userData = await response.json();
             const userName = userData.name; // Accessing user's name from the response
             const welcomeMessageElement = document.getElementById('welcome-message');
-            welcomeMessageElement.textContent = `Welcome, ${userName}!`;
+            if (welcomeMessageElement) { // Check if the element exists
+                welcomeMessageElement.textContent = `Welcome, ${userName}!`;
+            }
+        } else if (response.status === 401) {
+            // Handle unauthorized access
+            const welcomeMessageElement = document.getElementById('welcome-message');
+            if (welcomeMessageElement) { // Check if the element exists
+                welcomeMessageElement.textContent = "Please log in to access this feature.";
+            }
         } else {
             throw new Error('Failed to fetch user data');
         }
