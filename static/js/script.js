@@ -6,7 +6,34 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add event listener to the registration form submission
     const registrationForm = document.getElementById('register-form');
     registrationForm.addEventListener('submit', register);
+
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            // Optionally prevent default submission
+            event.preventDefault();
+
+            // Clear other results
+            clearOtherResults(event.target.id);
+        });
+    });
 });
+
+
+function clearOtherResults(currentDivId) {
+    // List of all result div IDs
+    const resultDivIds = ['book-results', 'add-review-status', 'get-reviews-results', 'delete-review-status', 'book-status', 'author-status'];
+
+    resultDivIds.forEach(divId => {
+        if (divId !== currentDivId) {
+            const div = document.getElementById(divId);
+            if (div) {
+                div.innerHTML = ''; // Clear the content
+            }
+        }
+    });
+}
+
 
 async function updateUserWelcomeMessage() {
     try {
@@ -112,7 +139,7 @@ async function register(event) {
 
 async function searchBooks(event) {
     event.preventDefault(); // Prevent form submission
-
+    clearOtherResults('book-results');
     const query = document.getElementById('search-query').value;
     console.log('Search Query:', query); // Debugging
 
@@ -168,7 +195,7 @@ async function displayBookDetails(bookId) {
 
 async function addReview(event) {
     event.preventDefault();
-
+    clearOtherResults('add-review-status');
     const bookIdInput = document.getElementById('book_id');
     const contentInput = document.getElementById('content');
     const statusDiv = document.getElementById('add-review-status');
@@ -241,6 +268,7 @@ async function submitReview(bookId, reviewContent) {
 
 async function addAuthor(event) {
     event.preventDefault();
+    clearOtherResults('author-status');
     const formData = new FormData(event.target);
     fetch('/admin/add_author', {
         method: 'POST',
@@ -267,7 +295,7 @@ async function addAuthor(event) {
 // JavaScript code for handling form submission to add a new book
 async function addBook(event) {
     event.preventDefault();
-
+    clearOtherResults('book-status');
     // Get form data
     const formData = new FormData(event.target);
 
@@ -297,7 +325,7 @@ async function addBook(event) {
 
 async function getReviews(event) {
     event.preventDefault(); // Prevent form submission
-
+    clearOtherResults('get-reviews-results');
     const bookId = document.getElementById('bookid').value;
     console.log('Book ID:', bookId); // Debugging
 
@@ -344,7 +372,7 @@ async function getReviews(event) {
 
 async function deleteReview(event) {
     event.preventDefault(); // Prevent form submission
-
+    clearOtherResults('delete-review-status');
     const reviewId = document.getElementById('review_id').value; // Fetch the review ID from input
     console.log('Review ID:', reviewId); // Debugging log
 

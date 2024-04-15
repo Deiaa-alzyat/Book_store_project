@@ -110,3 +110,9 @@ a:hover {
         box-shadow: none;
         color: #ddd;
 }
+
+#book-results,#add-review-status, #get-reviews-results, #delete-review-status{
+	max-height: 230px;
+        overflow-y: auto;
+}
+

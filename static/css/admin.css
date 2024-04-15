@@ -55,6 +55,9 @@ form, #book-status, #author-status {
     background-color: transparent;
     box-shadow: none;
     color: #ddd;
+    max-height: 700px;
+    overflow-y: auto;
+
 }
 
 label {
