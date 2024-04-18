@@ -1,5 +1,5 @@
 # Book Store
-
+![Book Store Screenshot](static/img/book_store.jpg "Book Store Screenshot")
 Welcome to **At The Book Store**, a comprehensive platform dedicated to all bibliophiles searching for their next great read. Our mission is to transport you to another world through the pages of a book. Explore our diverse collection ranging from timeless classics to contemporary bestsellers.
 
 Explore the deployed project here: [Book Store Live](https://book-store-project-1-c1r0.onrender.com/)
